@@ -15,6 +15,7 @@ exports.filterDataFoCaching = (rawData) => {
     cache_key: data.key,
     data: {
       ttl: data.ttl,
+      id: data['_id'],
     },
   };
 };

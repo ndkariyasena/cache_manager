@@ -62,10 +62,30 @@ const updateKey = async (key, data) => {
   return true;
 };
 
+const deleteKey = async (key) => {
+  if (!key || key === '') throw Error('Invalid key.');
+
+  const cacheData = await readCacheFile();
+
+  delete cacheData[key];
+
+  await writCacheIntoFile(cacheData);
+
+  return true;
+};
+
+const clearCache = async () => {
+  await writCacheIntoFile({});
+
+  return true;
+};
+
 module.exports = {
   writCacheIntoFile,
   readCacheFile,
   checkCacheKeys,
   getAllKeys,
   updateKey,
+  deleteKey,
+  clearCache,
 };

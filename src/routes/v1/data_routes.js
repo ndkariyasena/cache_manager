@@ -14,4 +14,7 @@ router.get('/by-key/:cache_key', cacheDataController.getCacheByKey);
 
 router.post('/', validator(createAndUpdateByKey, 'body'), cacheDataController.createAndUpdateByKey);
 
+router.delete('/by-key/:cache_key', cacheDataController.deleteCacheByKey);
+router.delete('/all', cacheDataController.deleteAllCache);
+
 module.exports = router;

@@ -2,8 +2,6 @@ const { updateKey } = require('../../../configs/caching');
 const { filterDataFoCaching } = require('../../../helpers/data_filters');
 const Schema = require('./cache_data_module');
 
-// const SEQUENCE = 'BEST-PHOTOS';
-
 /**
  *
  *
@@ -55,9 +53,36 @@ const findByQuery = async (query, options = null, fields = {}) => {
 const findOneByQueryAndUpdate = async (query, updates, options = {}) =>
   await Schema.findOneAndUpdate(query, updates, options);
 
+/**
+ *
+ *
+ * @param {*} id
+ */
+const findByIdAndRemove = async (id) => await Schema.findOneAndRemove({ _id: id });
+
+/**
+ *
+ *
+ * @param {*} query
+ */
+const deleteManyRecords = async (query = {}) => {
+  if (Object.keys(query).length === 0) throw Error('Empty query found');
+  return await Schema.remove(query);
+};
+
+/**
+ *
+ *
+ * @param {*} id
+ */
+const truncateCollection = async () => await Schema.remove({});
+
 module.exports = {
   createNewCache,
   findOneByQuery,
   findByQuery,
   findOneByQueryAndUpdate,
+  findByIdAndRemove,
+  deleteManyRecords,
+  truncateCollection,
 };
