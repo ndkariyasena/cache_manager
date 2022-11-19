@@ -22,7 +22,6 @@ const ttlUpdate = (cacheData) => {
 /* Schema */
 const cacheDataSchema = new Schema(
   {
-    // _id: { type: String },
     key: { type: String },
     cache_value: { type: String },
     ttl: { type: Number },
@@ -38,8 +37,7 @@ cacheDataSchema.pre('save', async function dataTtlUpdate(next) {
 
 cacheDataSchema.pre('findOneAndUpdate', async function dataTtlUpdate(next) {
   const docToUpdate = await this.model.findOne(this.getQuery());
-  ttlUpdate(this);
-  console.log(docToUpdate); // The document that `findOneAndUpdate()` will modify
+  ttlUpdate(docToUpdate);
   next();
 });
 

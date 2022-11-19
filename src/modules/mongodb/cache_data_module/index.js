@@ -3,7 +3,8 @@ const { filterDataFoCaching } = require('../../../helpers/data_filters');
 const Schema = require('./cache_data_module');
 
 /**
- *
+ * Create a new record in the database.
+ * After creating record cache data file fill update too
  *
  * @param {*} payload
  * @returns

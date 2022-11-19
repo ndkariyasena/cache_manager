@@ -1,0 +1,19 @@
+version: "3.3"
+
+services:
+  cache-manager-server:
+    container_name: cache-manager-server
+    restart: on-failure
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+    links:
+      - mongodb-service
+  mongodb-service:
+    container_name: mongodb-service
+    image: mongo
+    restart: on-failure
+    ports:
+    - "27017:27017"
