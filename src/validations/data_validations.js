@@ -5,8 +5,9 @@ const joi = require('joi');
  * @type {{eventsCreate: Joi.ObjectSchema<any>}}
  */
 const cacheValidationsSchema = {
-  getCacheById: joi.object({
+  createAndUpdateByKey: joi.object({
     key: joi.string().required(),
+    value: joi.string().required(),
   }),
 };
 

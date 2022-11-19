@@ -1,4 +1,5 @@
-// const { Counter } = require('@v1/module/counters');
+const { updateKey } = require('../../../configs/caching');
+const { filterDataFoCaching } = require('../../../helpers/data_filters');
 const Schema = require('./cache_data_module');
 
 // const SEQUENCE = 'BEST-PHOTOS';
@@ -10,7 +11,12 @@ const Schema = require('./cache_data_module');
  * @returns
  */
 const createNewCache = async (payload) => {
-  return await Schema.create(payload);
+  const data = await Schema.create(payload);
+
+  const dataToCache = filterDataFoCaching(data);
+  await updateKey(dataToCache.cache_key, dataToCache.data);
+
+  return data;
 };
 
 /**
