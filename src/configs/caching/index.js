@@ -103,7 +103,7 @@ const deleteKey = async (key) => {
 
   const cacheData = await readCacheFile();
 
-  delete cacheData[key];
+  if (cacheData[key]) delete cacheData[key];
 
   await writCacheIntoFile(cacheData);
 
