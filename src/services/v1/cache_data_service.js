@@ -64,8 +64,6 @@ exports.deleteCacheByKey = async (cache_key) => {
     const cacheKeyData = await checkCacheKeys(cache_key);
 
     if (cacheKeyData) {
-      console.log('Cache miss');
-
       await findByIdAndRemove(cacheKeyData.id);
 
       await deleteKey(cache_key);

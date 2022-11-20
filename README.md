@@ -38,6 +38,7 @@ This README document will provide steps to get this application up and running.
 * `dotenv`              - Loads environment variables from a . env file into process. env
 * `mongoose`            - Mongodb schema solution
 * `uuid`                - Generate random ids
+* `joi`                 - Request data validation
 
 #### Dev-Dependencies ####
 
@@ -45,6 +46,32 @@ This README document will provide steps to get this application up and running.
 * `eslint`        - Linting utility
 * `prettier`        - Linting utility
 * `nodemon`       - Automatically restarting the node application when file changes
+
+#### Folder structure ####
+
+* `src`           - Source codes root directory
+  * `configs`     - Configuration files ( Database/Caching )
+    * `caching > cache_data` - Auto generate when caching starts
+  * `controllers` - Controller files
+  * `helpers`     - Helper functions
+  * `middleware`  - Middleware functions
+  * `modules`     - Database schemas & modules
+  * `routes`      - API routes layer
+  * `services`    - Services files
+  * `validations` - Request data validation
+  * `server.js`   - Entry file
+* `.dockerignore`
+* `.env.*`
+* `.eslintrc.json`
+* `gitignore`
+* `.nvmrc`        - Nodejs version
+* `.prettierrc`
+* `docker-compose.yml`
+* `Dockerfile`
+* `package-lock.json`
+* `package.json`
+* `README.md`
+
 
 #### TODO ####
 * `Unit tests`

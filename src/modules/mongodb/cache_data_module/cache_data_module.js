@@ -14,7 +14,7 @@ mongoose.connection = conn;
 const ttlUpdate = (cacheData) => {
   const ttl = new Date();
   const { CACHE_DATA_TTL_NUMBER_OF_DAYS = 1 } = process.env;
-  cacheData.ttl = ttl.setDate(new Date().getDate() + CACHE_DATA_TTL_NUMBER_OF_DAYS);
+  cacheData.ttl = ttl.setDate(new Date().getDate() + Number(CACHE_DATA_TTL_NUMBER_OF_DAYS));
 
   return cacheData;
 };
