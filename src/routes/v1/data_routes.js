@@ -8,13 +8,18 @@ const { createAndUpdateByKey } = require('../../validations/data_validations');
 /* Controller imports */
 const cacheDataController = require('../../controllers/v1/cache_data_controller');
 
-/* Routes */
+/* -- Routes -- */
+/* Get all cached-keys */
 router.get('/keys', cacheDataController.getAllKeys);
-router.get('/by-key/:cache_key', cacheDataController.getCacheByKey);
+/* Get data by cache-key */
+router.get('/:cache_key', cacheDataController.getCacheByKey);
 
+/* Create a new record */
 router.post('/', validator(createAndUpdateByKey, 'body'), cacheDataController.createAndUpdateByKey);
 
+/* Delete a record by cache-key */
 router.delete('/by-key/:cache_key', cacheDataController.deleteCacheByKey);
-router.delete('/all', cacheDataController.deleteAllCache);
+/* Clear all cached records */
+router.delete('/', cacheDataController.deleteAllCache);
 
 module.exports = router;

@@ -1,13 +1,28 @@
-const { updateKey } = require('../../../configs/caching');
+const { updateKey } = require('../../../helpers/cache_managers');
 const { filterDataFoCaching } = require('../../../helpers/data_filters');
+const { generateNextTtl } = require('../../../helpers/generator');
 const Schema = require('./cache_data_module');
+
+/* Helpers */
+
+/**
+ * Reset document TTL values on every read
+ *
+ * @param {*} query
+ * @return {object}
+ */
+const updateTtlAfterRead = async (query) => {
+  const update = { ttl: generateNextTtl() };
+  return await Schema.findOneAndUpdate(query, update);
+};
+/* Helpers END */
 
 /**
  * Create a new record in the database.
  * After creating record cache data file fill update too
  *
- * @param {*} payload
- * @returns
+ * @param {object} payload
+ * @return {object}
  */
 const createNewCache = async (payload) => {
   const data = await Schema.create(payload);
@@ -19,52 +34,56 @@ const createNewCache = async (payload) => {
 };
 
 /**
+ * Find a document query
  *
- *
- * @param {*} query
- * @param {*} [fields={}]
+ * @param {object} query
+ * @param {object} [fields={}]
+ * @return {object}
  */
-const findOneByQuery = async (query, fields = {}) => await Schema.findOne(query, fields);
+const findOneByQuery = async (query, fields = {}) => {
+  const data = await Schema.findOne(query, fields);
+  if (data) updateTtlAfterRead(query);
 
-/**
- *
- *
- * @param {*} query
- * @param {*} options
- * @param {*} [fields={}]
- * @returns
- */
-const findByQuery = async (query, options = null, fields = {}) => {
-  const users = Schema.find(query, fields);
-
-  if (options && options.sort) users.sort(options.sort);
-
-  if (options && options.limit > 0) users.limit(options.limit);
-
-  return await users;
+  return data;
 };
 
 /**
+ * Get all cache_keys
  *
- *
- * @param {*} query
- * @param {*} updates
- * @param {*} [options={}]
+ * @param {object} query
+ * @param {object} [fields={}]
+ * @return {object}
  */
-const findOneByQueryAndUpdate = async (query, updates, options = {}) =>
-  await Schema.findOneAndUpdate(query, updates, options);
+const getAllCacheKeys = async (query = {}) => {
+  const data = await Schema.find(query).select({ key: 1, _id: 0 });
+
+  return data;
+};
 
 /**
+ * Get a record by ID
  *
+ * @param {string} _id
+ * @return {object}
+ */
+const findById = async (_id) => {
+  const data = await Schema.findById(_id);
+  if (data) updateTtlAfterRead({ _id });
+
+  return data;
+};
+
+/**
+ * Find a document by ID and remove
  *
- * @param {*} id
+ * @param {string} id
  */
 const findByIdAndRemove = async (id) => await Schema.findOneAndRemove({ _id: id });
 
 /**
+ * Delete many records
  *
- *
- * @param {*} query
+ * @param {object} query
  */
 const deleteManyRecords = async (query = {}) => {
   if (Object.keys(query).length === 0) throw Error('Empty query found');
@@ -72,18 +91,17 @@ const deleteManyRecords = async (query = {}) => {
 };
 
 /**
+ * Truncate the collection
  *
- *
- * @param {*} id
  */
 const truncateCollection = async () => await Schema.remove({});
 
 module.exports = {
   createNewCache,
   findOneByQuery,
-  findByQuery,
-  findOneByQueryAndUpdate,
   findByIdAndRemove,
   deleteManyRecords,
   truncateCollection,
+  findById,
+  getAllCacheKeys,
 };

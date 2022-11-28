@@ -31,10 +31,6 @@ const connect = (database, appVersion = null) => {
     dbURL = `mongodb://${HOST}:${PORT}/${database}`;
   }
 
-  // mongoose.set('useCreateIndex', true);
-
-  // mongoose.set('useFindAndModify', false);
-
   const connection = mongoose.createConnection(dbURL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,

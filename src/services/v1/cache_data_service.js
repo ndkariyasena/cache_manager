@@ -1,31 +1,43 @@
-const { v4: UUID_v4 } = require('uuid');
-
 const { filterDataFoResponse } = require('../../helpers/data_filters');
-const { checkCacheKeys, getAllKeys, deleteKey, clearCache } = require('../../configs/caching');
+const { generateRandomWords } = require('../../helpers/generator');
+const { checkCacheKeys, deleteKey, clearCache } = require('../../helpers/cache_managers');
 const {
-  findOneByQuery,
   createNewCache,
   findByIdAndRemove,
   truncateCollection,
+  findById,
+  getAllCacheKeys,
 } = require('../../modules/mongodb/cache_data_module');
 
+/**
+ * Get cache by cache-key logic handler
+ *
+ * @param {object} payload
+ * @return {object}
+ */
 exports.getCacheByKey = async (cache_key) => {
   try {
     if (!cache_key || cache_key === '') throw Error('Valid cache_key not found');
 
-    let cacheData = null;
-    const cacheKey = await checkCacheKeys(cache_key);
+    let data = null;
+    /* Check key in the cache file */
+    let cacheData = await checkCacheKeys(cache_key);
 
-    if (!cacheKey) {
+    /* validate data */
+    if (!cacheData || new Date(cacheData.ttl) < new Date()) {
       console.log('Cache miss');
 
-      cacheData = await createNewCache({ key: UUID_v4(), cache_value: 'test' });
+      /* Create a new record */
+      data = await createNewCache({ key: cache_key, cache_value: generateRandomWords() });
+      cacheData = null;
     } else {
       console.log('Cache hit');
-      cacheData = await findOneByQuery({ key: cache_key });
+      /* Get data from the database */
+      data = await findById(cacheData.id);
     }
 
-    return { data: filterDataFoResponse(cacheData), status: cacheKey ? 200 : 201 };
+    /* Filter data and send */
+    return { data: filterDataFoResponse(data), status: cacheData ? 200 : 201 };
   } catch (error) {
     console.error('Error in getCacheByKey service layer');
     console.error(error);
@@ -33,11 +45,17 @@ exports.getCacheByKey = async (cache_key) => {
   }
 };
 
+/**
+ * Get all cached keys list
+ *
+ * @param {object} payload
+ * @return {object}
+ */
 exports.getAllCachedKeys = async () => {
   try {
-    const allKeys = await getAllKeys();
+    const allKeys = await getAllCacheKeys();
 
-    return { cache_keys: allKeys };
+    return { cache_keys: allKeys.map((item) => item.key) };
   } catch (error) {
     console.error('Error in getAllCachedKeys service layer');
     console.error(error);
@@ -45,6 +63,12 @@ exports.getAllCachedKeys = async () => {
   }
 };
 
+/**
+ * Create a new record in the database.
+ *
+ * @param {object} payload
+ * @return {object}
+ */
 exports.createAndUpdateByKey = async (data) => {
   try {
     const cacheData = await createNewCache(data);
@@ -57,6 +81,12 @@ exports.createAndUpdateByKey = async (data) => {
   }
 };
 
+/**
+ * Delete a record by cache-key
+ *
+ * @param {object} payload
+ * @return {object}
+ */
 exports.deleteCacheByKey = async (cache_key) => {
   try {
     if (!cache_key || cache_key === '') throw Error('Valid cache_key not found');
@@ -64,8 +94,6 @@ exports.deleteCacheByKey = async (cache_key) => {
     const cacheKeyData = await checkCacheKeys(cache_key);
 
     if (cacheKeyData) {
-      console.log('Cache miss');
-
       await findByIdAndRemove(cacheKeyData.id);
 
       await deleteKey(cache_key);
@@ -79,6 +107,12 @@ exports.deleteCacheByKey = async (cache_key) => {
   }
 };
 
+/**
+ * Clear all cached records.
+ *
+ * @param {object} payload
+ * @return {object}
+ */
 exports.deleteAllCacheRecords = async () => {
   try {
     await truncateCollection();
