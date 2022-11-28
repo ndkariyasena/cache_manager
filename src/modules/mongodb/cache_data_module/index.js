@@ -1,4 +1,4 @@
-const { updateKey } = require('../../../configs/caching');
+const { updateKey } = require('../../../helpers/cache_managers');
 const { filterDataFoCaching } = require('../../../helpers/data_filters');
 const { generateNextTtl } = require('../../../helpers/generator');
 const Schema = require('./cache_data_module');
@@ -48,6 +48,19 @@ const findOneByQuery = async (query, fields = {}) => {
 };
 
 /**
+ * Get all cache_keys
+ *
+ * @param {object} query
+ * @param {object} [fields={}]
+ * @return {object}
+ */
+const getAllCacheKeys = async (query = {}) => {
+  const data = await Schema.find(query).select({ key: 1, _id: 0 });
+
+  return data;
+};
+
+/**
  * Get a record by ID
  *
  * @param {string} _id
@@ -90,4 +103,5 @@ module.exports = {
   deleteManyRecords,
   truncateCollection,
   findById,
+  getAllCacheKeys,
 };

@@ -1,13 +1,12 @@
-const { v4: UUID_v4 } = require('uuid');
-
 const { filterDataFoResponse } = require('../../helpers/data_filters');
 const { generateRandomWords } = require('../../helpers/generator');
-const { checkCacheKeys, getAllKeys, deleteKey, clearCache } = require('../../configs/caching');
+const { checkCacheKeys, deleteKey, clearCache } = require('../../helpers/cache_managers');
 const {
   createNewCache,
   findByIdAndRemove,
   truncateCollection,
   findById,
+  getAllCacheKeys,
 } = require('../../modules/mongodb/cache_data_module');
 
 /**
@@ -29,9 +28,7 @@ exports.getCacheByKey = async (cache_key) => {
       console.log('Cache miss');
 
       /* Create a new record */
-      data = await createNewCache({ key: UUID_v4(), cache_value: generateRandomWords() });
-      /* Delete the old record */
-      deleteKey(cache_key);
+      data = await createNewCache({ key: cache_key, cache_value: generateRandomWords() });
       cacheData = null;
     } else {
       console.log('Cache hit');
@@ -56,9 +53,9 @@ exports.getCacheByKey = async (cache_key) => {
  */
 exports.getAllCachedKeys = async () => {
   try {
-    const allKeys = await getAllKeys();
+    const allKeys = await getAllCacheKeys();
 
-    return { cache_keys: allKeys };
+    return { cache_keys: allKeys.map((item) => item.key) };
   } catch (error) {
     console.error('Error in getAllCachedKeys service layer');
     console.error(error);

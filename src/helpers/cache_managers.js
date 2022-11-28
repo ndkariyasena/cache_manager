@@ -1,8 +1,9 @@
 const { writeFileSync, mkdirSync, existsSync, readFileSync } = require('fs');
+const path = require('path');
 
 const { MAX_CACHE_RECORDS_COUNT = 10 } = process.env;
 
-const CACHE_FILE_PATH = `${__dirname}/cache_data`;
+const CACHE_FILE_PATH = path.join(__dirname, '..', 'cache_data');
 const CACHE_FILE = `${CACHE_FILE_PATH}/cache.json`;
 
 /**

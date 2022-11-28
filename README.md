@@ -2,19 +2,20 @@
 
 # README #
 This README document will provide steps to get this application up and running.
+Code challenge details are in the `Code_challenge.pdf` file.
 
 ### Basic steps ###
 - `Create .env file`
-  - `To run the project in copy `.env.development`  to  `.env
+  - `To run the project in copy `.env.development` to `.env
 - `Run 'nvm' ` (within the directory) ( or use NodeJs v16.x )
 - `Run 'npm install' or 'npm i'` (within the directory)
 - `To start the project :`
-  - `In type the command in terminal 'npm start'`
+  - `Type the command in the terminal 'npm start'`
 - `In the development environment, the server will start on port 5000`
 
 ### Configurations ###
 
-- Database configurations in `./src/configs/database/database.js`
+- Database configurations in `./src/configs/database/mongodb.js`
 
 ### Files ###
 
@@ -27,17 +28,16 @@ This README document will provide steps to get this application up and running.
     - container name  = `cache-manager-server`
     - port            = `5000`
   - MongoDB :
-    - container name  = `mongodb-service`
+    - container name  = `MongoDB-service`
     - port            = `27017`
 
 ### Third-party libraries and usage ###
 
 #### Dependencies ####
 
-* `body-parser`         - Node.js body parsing middleware
-* `dotenv`              - Loads environment variables from a . env file into process. env
+* `body-parser`         - Node.js body-parsing middleware
+* `dotenv`              - Loads environment variables from a .env file into the process.env
 * `mongoose`            - Mongodb schema solution
-* `uuid`                - Generate random ids
 * `joi`                 - Request data validation
 
 #### Dev-Dependencies ####
@@ -45,7 +45,7 @@ This README document will provide steps to get this application up and running.
 * `babel-eslint`  - Linting utility
 * `eslint`        - Linting utility
 * `prettier`        - Linting utility
-* `nodemon`       - Automatically restarting the node application when file changes
+* `nodemon`       - Automatically restarting the node application when files changes
 
 #### Folder structure ####
 
@@ -75,10 +75,10 @@ This README document will provide steps to get this application up and running.
 
 #### TODO ####
 * `Unit tests`
-* `Swagger documentations`
+* `Swagger documentation`
 
 #### Areas can improve ####
 * `Response data handeling`
-* `Error handeling`
+* `Error handling`
 * `Error logging`
 * `Typescript integration`
